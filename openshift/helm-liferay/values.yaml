@@ -1,0 +1,14 @@
+name: liferay 
+replicaCount: 1
+image:
+  repository: liferay
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+resources: 
+  requests: 
+    memory: 2048Mi
+    cpu: 2
+  limits: 
+    memory: 4098Mi
+    cpu: 3

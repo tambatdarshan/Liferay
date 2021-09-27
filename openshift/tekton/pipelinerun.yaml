@@ -1,0 +1,28 @@
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineRun
+metadata:
+  generateName: liferay-pipelinerun
+spec:
+  serviceAccountName: pipeline 
+  pipelineRef:
+    name: liferay-pipeline
+  workspaces:
+  - name: shared-workspace
+    volumeClaimTemplate:
+      spec: 
+        accessModes: 
+          - ReadWriteOnce 
+        resources:
+          requests:
+            storage: 1Gi
+  - name: images-url 
+    emptyDir: {}  
+  params: 
+    - name: GIT_URL
+      value: https://github.com/DaniellaFreese/liferay-hellworld.git
+    - name: IMAGE 
+      value: liferay
+    - name: TAG 
+      value: "latest"
+    - name: NAMESPACE
+      value: "danny"

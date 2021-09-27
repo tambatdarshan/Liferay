@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.name }}
+  labels:
+    app: {{ .Values.name }}
+  annotations:
+    alpha.image.policy.openshift.io/resolve-names: '*'
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.name }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        app: {{ .Values.name }}
+    spec:
+      containers:
+      - name: {{ .Values.name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: 11311
+        - containerPort: 8080
+        readinessProbe: 
+          httpGet:
+            path: "/c/portal/layout"
+            port: 8080
+          initialDelaySeconds: 120
+          periodSeconds: 15
+          failureThreshold: 3
+          successThreshold: 3
+        livenessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 120
+          periodSeconds: 20
+          failureThreshold: 3
+          successThreshold: 1
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
+        volumeMounts:
+        - mountPath: /opt/liferay/data
+          name: liferay-data 
+        - mountPath: /mnt/liferay
+          name: liferay-config 
+        - mountPath: /opt/liferay/portal-ext.properties
+          subPath: portal-ext.properties
+          name: portal-properties
+      volumes:
+      - name: liferay-data
+        emptyDir: {}
+      - name: liferay-config
+        emptyDir: {}
+      - name: portal-properties
+        configMap: 
+          name: portal-properties

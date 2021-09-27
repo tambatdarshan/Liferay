@@ -1,0 +1,66 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: oracle-slim
+  name: oracle-slim
+spec:
+  ports:
+  - name: 1521-tcp
+    port: 1521
+    protocol: TCP
+    targetPort: 1521
+  - name: 5500-tcp
+    port: 5500
+    protocol: TCP
+    targetPort: 5500
+  selector:
+    app: oracle-slim
+  sessionAffinity: None
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: oracle-slim
+  annotations:
+    alpha.image.policy.openshift.io/resolve-names: '*'
+  name: oracle-slim
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oracle-slim
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: oracle-slim
+    spec:
+      containers:
+      - image: oracle12c:12.2.0.1-slim
+        name: oracle-slim
+        ports:
+        - containerPort: 1521
+          protocol: TCP
+        - containerPort: 5500
+          protocol: TCP
+        resources:
+          limits:
+            memory: 2Gi
+          requests:
+            memory: 2Gi
+        volumeMounts:
+        - mountPath: /ORCL
+          name: orcl
+      restartPolicy: Always
+      securityContext:
+        fsGroup: 54321
+      serviceAccount: oracle
+      serviceAccountName: oracle
+      imagePullPolicy: IfNotPresent
+      volumes:
+      - name: orcl
+        emptyDir: {}

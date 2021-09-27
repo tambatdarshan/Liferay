@@ -1,0 +1,70 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: liferay-pipeline
+spec:
+  params: 
+    - name: GIT_URL
+      description: git repo url
+      type: string
+    - name: IMAGE 
+      description: app image name to be created 
+      type: string 
+    - name: TAG
+      description: tag to be applied to the image 
+      type: string 
+    - name: NAMESPACE
+      description: namespace to deploy code 
+      type: string 
+  workspaces:
+    - name: shared-workspace
+    - name: images-url 
+  tasks:
+    - name: fetch-repository
+      taskRef:
+        name: git-clone
+        kind: ClusterTask 
+      workspaces:
+        - name: output
+          workspace: shared-workspace
+      params:
+        - name: url 
+          value: $(params.GIT_URL)
+        - name: subdirectory
+          value: ""
+        - name: deleteExisting
+          value: "true"
+        - name: revision 
+          value: master
+    - name: buildah-build-image 
+      taskRef: 
+        name: buildah 
+        kind: ClusterTask 
+      workspaces: 
+      - name: source 
+        workspace: shared-workspace 
+      params: 
+        - name: IMAGE
+          value: image-registry.openshift-image-registry.svc:5000/$(params.NAMESPACE)/$(params.IMAGE):$(params.TAG)
+        - name: DOCKERFILE 
+          value: ./Dockerfile
+        - name: TLSVERIFY
+          value: "false"
+      runAfter: 
+        - git-clone
+    - name: deploy-dev 
+      taskRef: 
+        name: openshift-client
+        kind: ClusterTask
+      workspaces:
+          - name: manifest-dir
+            workspace: shared-workspace
+      params:
+          - name: SCRIPT
+            value: |
+              oc apply --filename openshift/app/liferay.yaml
+              oc wait --for=condition=available --timeout=600s deployment/liferay
+              echo "-----------Displaying all the pods-----------"
+              oc get pods
+      runAfter: 
+        - buildah-build-image
