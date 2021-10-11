@@ -67,9 +67,6 @@ items:
             name: liferay-data 
           - mountPath: /mnt/liferay
             name: liferay-config 
-          - mountPath: /opt/liferay/portal-ext.properties
-            subPath: portal-ext.properties
-            name: portal-properties
           # - mountPath: /opt/liferay/osgi/configs
           #   name: liferay-osgi-configs
           # - mountPath: /opt/liferay/osgi/marketplace
