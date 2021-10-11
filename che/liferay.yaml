@@ -67,14 +67,6 @@ items:
             name: liferay-data 
           - mountPath: /mnt/liferay
             name: liferay-config 
-          # - mountPath: /opt/liferay/osgi/configs
-          #   name: liferay-osgi-configs
-          # - mountPath: /opt/liferay/osgi/marketplace
-          #   name: liferay-osgi-marketplace
-          # - mountPath: /opt/liferay/osgi/modules
-          #   name: liferay-osgi-modules
-          # - mouthPath: /opt/liferay/osgi/war
-          #   name: liferay-osgi-war
         restartPolicy: Always 
         volumes: 
         - name: liferay-data
