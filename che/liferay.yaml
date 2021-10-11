@@ -84,9 +84,6 @@ items:
           emptyDir: {}
         - name: liferay-config
           emptyDir: {}
-        - name: portal-properties
-          configMap: 
-            name: portal-properties-oracle
 -
   apiVersion: v1
   kind: Service
