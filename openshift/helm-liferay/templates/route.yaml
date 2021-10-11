@@ -5,7 +5,6 @@ metadata:
   labels:
     app: {{ .Values.name }} 
 spec:
-  host: 
   port:
     targetPort: 8080
   to:

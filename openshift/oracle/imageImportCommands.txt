@@ -11,7 +11,7 @@ $ oc create secret docker-registry oracle \
     --docker-server=container-registry.oracle.com \
     --docker-username=<username> \
     --docker-password=<password>
-$ oc secrets link default oracle --for=pull
+$ oc secrets link oracle oracle --for=pull
 
 $ oc import-image oracle-enterprise:19.3.0.0 --confirm \
     --reference-policy='local' \

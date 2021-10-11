@@ -1,0 +1,60 @@
+apiVersion: 1.0.0
+metadata:
+  name: liferay
+projects:
+  - name: liferay-blade-samples
+    source:
+      location: 'https://github.com/DaniellaFreese/liferay-blade-samples.git'
+      type: git
+components:
+  - id: redhat/java11/latest
+    preferences:
+      java.server.launchMode: Standard
+    type: chePlugin
+  - mountSources: true
+    endpoints:
+      - name: health-checks-endpoint
+        port: 8080
+    memoryLimit: 512Mi
+    type: dockerimage
+    volumes:
+      - name: m2
+        containerPath: /home/jboss/.m2
+    alias: maven
+    image: 'registry.redhat.io/codeready-workspaces/plugin-java11-rhel8@sha256:d0337762e71fd4badabcb38a582b2f35e7e7fc1c9c0f2e841e339d45b7bd34ed'
+    env:
+      - value: '-XX:MaxRAMPercentage=50.0 -XX:+UseParallelGC -XX:MinHeapFreeRatio=10 -XX:MaxHeapFreeRatio=20 -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xms20m -Djava.security.egd=file:/dev/./urandom -Duser.home=/home/jboss'
+        name: JAVA_OPTS
+      - value: $(JAVA_OPTS)
+        name: MAVEN_OPTS
+  - alias: liferay
+    type: openshift 
+    reference: liferay.yaml
+commands:
+  - name: 1. Build
+    actions:
+      - workdir: '${CHE_PROJECTS_ROOT}/liferay-blade-samples/maven'
+        type: exec
+        command: mvn clean install
+        component: maven
+  - name: 2. Run tests
+    actions:
+      - workdir: '${CHE_PROJECTS_ROOT}/liferay-blade-samples/maven'
+        type: exec
+        command: mvn test
+        component: maven
+  # - name: Debug remote java application
+  #   actions:
+  #     - referenceContent: |
+  #         {
+  #          "version": "0.2.0",
+  #          "configurations": [
+  #            {
+  #              "type": "java",
+  #              "name": "Debug (Attach) - Remote",
+  #              "request": "attach",
+  #              "hostName": "localhost",
+  #              "port": 5005
+  #            }]
+  #          }
+  #       type: vscode-launch
