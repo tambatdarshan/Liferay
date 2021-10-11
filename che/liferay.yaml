@@ -9,8 +9,6 @@ items:
     name: liferay
     labels:
       app: liferay
-    annotations:
-      alpha.image.policy.openshift.io/resolve-names: '*'
   spec:
     replicas: 1 
     selector:
@@ -35,7 +33,7 @@ items:
             value: "domain"
           - name: JAVA_VERSION
             value: zulu11
-          image: liferay:latest
+          image: image-registry.openshift-image-registry.svc:5000/liferay/liferay:latest
           resources:
             requests: 
               memory: "2048Mi"
