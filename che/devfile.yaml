@@ -7,6 +7,9 @@ projects:
       location: 'https://github.com/DaniellaFreese/liferay-blade-samples.git'
       type: git
 components:
+  - alias: theia-editor
+    type: cheEditor
+    id: eclipse/che-theia/next
   - id: redhat/java11/latest
     preferences:
       java.server.launchMode: Standard
