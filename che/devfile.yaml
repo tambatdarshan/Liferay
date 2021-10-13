@@ -44,18 +44,24 @@ commands:
         type: exec
         command: mvn test
         component: maven
-  # - name: Debug remote java application
-  #   actions:
-  #     - referenceContent: |
-  #         {
-  #          "version": "0.2.0",
-  #          "configurations": [
-  #            {
-  #              "type": "java",
-  #              "name": "Debug (Attach) - Remote",
-  #              "request": "attach",
-  #              "hostName": "localhost",
-  #              "port": 5005
-  #            }]
-  #          }
-  #       type: vscode-launch
+  - name: 3. Deploy Artifact to Lifery 
+    actions: 
+      - workdir: '${CHE_PROJECTS_ROOT}/liferay-blade-samples/maven/apps/jsp-portlet/target'
+        type: exec 
+        command: cp *.jar /opt/liferay/deploy/
+        component: liferay 
+  - name: Debug remote java application
+    actions:
+      - referenceContent: |
+          {
+           "version": "0.2.0",
+           "configurations": [
+             {
+               "type": "java",
+               "name": "Debug (Attach) - Remote",
+               "request": "attach",
+               "hostName": "localhost",
+               "port": 8000
+             }]
+           }
+        type: vscode-launch
