@@ -1,7 +1,8 @@
-name: liferay 
+name: liferay
+namespace: temp 
 replicaCount: 1
 image:
-  repository: liferay
+  repository: dfreese.azurecr.io/liferay/liferay
   pullPolicy: IfNotPresent
   tag: "latest"
 

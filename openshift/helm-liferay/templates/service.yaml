@@ -4,6 +4,7 @@ metadata:
   labels:
     app: {{ .Values.name }}
   name: {{ .Values.name }}-svc
+  namespace: {{ .Values.namespace }}
 spec:
   ports:
   - name: "8080"
