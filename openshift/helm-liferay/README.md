@@ -8,5 +8,5 @@ You should see the liferay imagestream, with a reference to an image.
 
 To deploy the chart, have  helm 3 cli tool installed, and run the following command: 
 ```
-helm install liferay-f openshift/helm-liferay/values.yaml
+helm install liferay ./ -f openshift/helm-liferay/values.yaml
 ```
