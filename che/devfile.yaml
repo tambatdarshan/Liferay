@@ -5,7 +5,7 @@ metadata:
 projects:
   - git:
       remotes:
-        origin: 'https://github.com/DaniellaFreese/liferay-blade-samples.git'
+        origin: 'https://github.com/renatoppuccini/liferay-blade-samples.git'
     name: liferay-blade-samples
 components:
   - container:
@@ -50,7 +50,7 @@ components:
           value: 'https://devspaces.apps.cluster-jwnpq.jwnpq.sandbox1536.opentlc.com/plugin-registry/v3'
         - name: CHE_PLUGIN_REGISTRY_INTERNAL_URL
           value: 'http://plugin-registry.openshift-devspaces.svc:8080/v3'
-      image: 'image-registry.openshift-image-registry.svc:5000/opentlc-mgr-devspaces/liferay:latest'
+      image: 'image-registry.openshift-image-registry.svc:5000/openshift/liferay:latest'
       memoryLimit: 8196Mi
       sourceMapping: /projects
       volumeMounts:
